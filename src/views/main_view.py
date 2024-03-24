@@ -4,10 +4,12 @@ from src.utils.questions import world_one, world_two, world_three
 from src.views.icones import *
 from CTkXYFrame import *
 import openai
+from dotenv import load_dotenv
 
+import os
 import threading
 import tkinter as tk
-
+load_dotenv()
 class MainView(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -32,7 +34,7 @@ class MainView(ctk.CTk):
         self.current_world = []
         self.list_message = []
 
-        #openai.api_key = key
+        openai.api_key = os.environ["key_api"]
 
         self.analysis_instruction_gpt = """Por favor, analise o código Python abaixo e a questão fornecida. Caso encontre algum erro, liste-os detalhadamente, explicando onde estão os equívocos:
 - Se o código estiver correto e atender às exigências da pergunta, retorne uma mensagem de confirmação.
