@@ -4,7 +4,7 @@ Este projeto foi desenvolvido com o intuito acadêmico e nostálgico de relembra
 
 ## Funcionalidades
 
-- Escolha do Mundo: Os usuários podem selecionar entre os "Mundos" 1, 2 e 3 do curso.
+- Escolha do Mundo: Os usuários podem selecionar entre os "Mundos" 1, 2 e 3 do curso ou acessar minhas redes sociais e o site do curso em video.
   <img src="example_image/menu_view.png"/>
 
 - Visualização dos Exercícios: Os exercícios correspondentes ao mundo escolhido são exibidos na interface.

@@ -1,4 +1,4 @@
-world_one = ["Imprima na tela a frase: 'Hello World'.",
+WORLD_ONE = ["Imprima na tela a frase: 'Hello World'.",
              "Faça um programa que leia o nome de uma pessoa e mostre uma mensagem de boas-vindas.",
              "Crie um programa que leia dois números e mostre a soma entre eles.",
              "Faça um programa que leia algo pelo teclado e mostre na tela o seu tipo primitivo e todas as informações possíveis sobre ele.",
@@ -34,7 +34,7 @@ world_one = ["Imprima na tela a frase: 'Hello World'.",
              "escreva um programa que pergunte o salário de um funcionário e calcule o valor do seu aumento. Para salários superiores a R$1250,00, calcule um aumento de 10%. Para os inferiores ou iguais, o aumento é de 15%.",
              "Desenvolva um programa que leia o comprimento de três retas e diga ao usuário se elas podem ou não formar um triângulo."]
 
-world_two = [
+WORLD_TWO = [
     "escreva um programa para aprovar o empréstimo bancário para a compra de uma casa. Pergunte o valor da casa, o salário do comprador e em quantos anos ele vai pagar. A prestação mensal não pode exceder 30% do salário ou então o empréstimo será negado.",
     "escreva um programa em Python que leia um número inteiro qualquer e peça para o usuário escolher qual será a base de conversão: 1 para binário, 2 para octal e 3 para hexadecimal.",
     "escreva um programa que leia dois números inteiros e compare-os. Mostrando uma mensagem na tela:— O primeiro valor é maior – O segundo valor é maior – Não existe valor maior, os dois são iguais.",
@@ -72,7 +72,7 @@ world_two = [
     "Crie um programa que leia o nome e o preço de vários produtos. O programa deverá perguntar se o usuário vai continuar ou não. No final, mostre: A) qual é o total gasto na compra. B) quantos produtos custam mais de R$1000. C) qual é o nome do produto mais barato.",
     "Crie um programa que simule o funcionamento de um caixa eletrônico. No início, pergunte ao usuário qual será o valor a ser sacado (número inteiro) e o programa vai informar quantas cédulas de cada valor serão entregues. OBS: considere que o caixa possui cédulas de R$50, R$20, R$10 e R$1."]
 
-world_three = [
+WORLD_THREE = [
     "Crie um programa que tenha uma Tupla totalmente preenchida com uma contagem por extenso, de zero até vinte. Seu programa deverá ler um número pelo teclado (entre 0 e 20) e mostrá-lo por extenso.",
     "Crie uma tupla preenchida com os 20 primeiros colocados da Tabela do Campeonato brasileiro de Futebol, na ordem de colocação. Depois mostre: a) Os 5 primeiros times. b) Os últimos 4 colocados. c) Times em ordem alfabética. d) Em que posição está o time da Chapecoense.",
     "Crie um programa que vai gerar cinco números aleatórios e colocar em uma tupla. Depois disso, mostre a listagem de números gerados e também indique o menor e o maior valor que estão na tupla.",
