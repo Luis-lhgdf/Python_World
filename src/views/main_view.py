@@ -1,27 +1,25 @@
 import customtkinter as ctk
 from src.utils.utils import Utilities
+from src.utils.questions import world_one, world_two, world_three
 from src.views.icones import *
 from CTkXYFrame import *
 import openai
+
 import threading
 import tkinter as tk
-
 
 class MainView(ctk.CTk):
     def __init__(self):
         super().__init__()
-
         self.utils = Utilities()
 
-        
         self.geometry("1200x650")
         self.configure(fg_color="#558FAD")
-
+        
 
         self.font_title = ("Fixedsys", 50, "bold")
         self.font_subtitle = ("Fixedsys", 22,)
         self.font_body = ("Fixedsys", 20,)
-
         self.font_code = ("Consolas", 20,)
         
 
@@ -31,41 +29,46 @@ class MainView(ctk.CTk):
         self.cursoemvideo_url = "https://www.cursoemvideo.com/curso/python-3-mundo-1/"
 
 
+        self.current_world = []
+        self.list_message = []
+
+        #openai.api_key = key
+
+        self.analysis_instruction_gpt = """Por favor, analise o código Python abaixo e a questão fornecida. Caso encontre algum erro, liste-os detalhadamente, explicando onde estão os equívocos:
+- Se o código estiver correto e atender às exigências da pergunta, retorne uma mensagem de confirmação.
+- Caso haja erros, liste-os em tópicos para que o usuário possa corrigi-los de forma adequada.
+- Se o usuário enviar algo em branco ou perguntar qualquer coisa fora do contexto, solicite gentilmente que ele forneça o código novamente, pois está vazio.
+
+A questão que o usuário deve responder é a seguinte:..."""
+
+
+
+
+        self.response_instruction = """Por favor, analise esta questão e responda retornando apenas a resposta em codigo python nao precisa adicionar comentarios ou explicações, retorne apenas o codigo repsota em python por favor."""
+
+         
+
+        self.menu_view()
+        self.mainloop()
+
+    def menu_view(self):
+
         self.grid_columnconfigure(0, weight=0)  # Coluna 0 não se expandirá
         self.grid_columnconfigure(1, weight=1)  # Coluna 1 vai expandir
         self.grid_rowconfigure(0, weight=1)
 
-
-        # Frame para os botões de navegação à esquerda
-        self.menu_navigation = ctk.CTkFrame(self, width=500, corner_radius=0, fg_color="#171D23")
-        self.menu_navigation.grid(row=0, column=0, sticky="nsew")
-        
-        self.word_frame = ctk.CTkFrame(self, width=100, fg_color="#D78A1E", corner_radius=20)
-        self.word_frame.grid(row=0, column=1, padx=(10,10), pady=10, sticky="nsew")
-
-
-        # label principal para exibição dos titulos dos exercicios
-        self.exercise_label = ctk.CTkLabel(self, text="", fg_color="#171D23", text_color="#4C76D9" )
-        #self.exercise_label.grid(row=0, column=1, sticky="nsew")
-
-
-        # Frame principal para exibição das opções dos exercicios
-        self.exercise_options = CTkXYFrame(self, width=100, fg_color="#FFF6E9", corner_radius=20)
-
-        self.solution_textbox = ctk.CTkTextbox(self, width=100, fg_color="#23272D", font=self.font_code, corner_radius=20, text_color="white")
-        
-
-        self.show_exercises()
-
-        # self.menu_view()
-        self.mainloop()
-
-
-    def menu_view(self):
         self.title("Escolha o Mundo")
 
+        self.menu_navigation= ctk.CTkFrame(self, width=500, corner_radius=0, fg_color="#171D23")
+        self.menu_navigation.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)
         self.menu_navigation.grid_columnconfigure((0, 1, 2), weight=1)
-        self.menu_navigation.grid_rowconfigure((0, 1, 6), weight=1)
+        self.menu_navigation.grid_rowconfigure((6), weight=1)
+
+
+        self.word_frame = ctk.CTkFrame(self, width=100, fg_color="#D78A1E", corner_radius=20)
+        self.word_frame.grid(row=0, column=1, padx=(10,10), pady=10, sticky="nsew")
+        self.word_frame.grid_columnconfigure((0, 1, 2), weight=1)
+
 
         self.title_label = ctk.CTkLabel(self.menu_navigation, font=self.font_title, text="PYTHON WORD", text_color="white")
         self.title_label.grid(column=0, row=0, padx=(80), pady=(15, 30), sticky="nsew", columnspan=3)
@@ -84,98 +87,170 @@ class MainView(ctk.CTk):
                                        hover_color="#D78A1E", command=lambda: self.utils.open_website(self.site_url))
         self.site_icon.grid(column=2, row=1, padx=(0, 0), sticky="w")
 
-        self.illustration_label = ctk.CTkButton(self.menu_navigation, width=0, image=illustration_image, text="", fg_color="transparent",  hover_color="#D78A1E",  command=lambda: self.utils.open_website(self.cursoemvideo_url))
-        self.illustration_label.grid(column=0, row=6, padx=(10), pady=(60, 10), sticky="s", columnspan=3)
+        self.cursoemvideo_img = ctk.CTkButton(self.menu_navigation, width=0, image=cursoemvideo_image, text="", fg_color="transparent",  hover_color="#D78A1E",  command=lambda: self.utils.open_website(self.cursoemvideo_url))
+        self.cursoemvideo_img.grid(column=0, row=6, padx=(10), pady=(60, 10), sticky="s", columnspan=3)
 
         
-        self.word_frame.grid_columnconfigure((0, 1, 2), weight=1)
-
-
-
-        self.world1_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world1_icon, fg_color="transparent", hover_color="#4C76D9", corner_radius=20)
+        
+        self.world1_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world1_icon, fg_color="transparent", hover_color="#4C76D9", corner_radius=20, command=lambda: self.show_questions(world_one))
         self.world1_btn.grid(column=0, row=0, padx=5, pady=5, sticky="nsew")
 
-        self.world2_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world2_icon, fg_color="transparent",  hover_color="#4C76D9", corner_radius=20)
+        self.world2_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world2_icon, fg_color="transparent",  hover_color="#4C76D9", corner_radius=20, command=lambda: self.show_questions(world_two))
         self.world2_btn.grid(column=1, row=0, padx=5, pady=5,sticky="nsew")
 
-        self.world3_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world3_icon, fg_color="transparent",  hover_color="#4C76D9", corner_radius=20)
+        self.world3_btn = ctk.CTkButton(self.word_frame, width=0, text="", image=world3_icon, fg_color="transparent",  hover_color="#4C76D9", corner_radius=20, command=lambda: self.show_questions(world_three))
         self.world3_btn.grid(column=2, row=0, padx=5, pady=5,sticky="nsew")
 
-    def show_exercises(self):
-        self.title("Escolha o exercicio")
+    def show_questions(self, world): 
+
+        self.current_world = world
+
+        self.utils.restart_interface(self.menu_navigation)
 
         self.word_frame.grid_remove()
 
 
-        self.menu_navigation.grid_columnconfigure((0), weight=1)
-        self.menu_navigation.grid_rowconfigure((1), weight=1)
+
+
+
+        self.grid_columnconfigure(0, weight=0)  # Coluna 0 não se expandirá
+        self.grid_columnconfigure(1, weight=1)  # Coluna 1 vai expandir
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=0)
 
 
         self.menu_navigation.configure(fg_color="#D78A1E", corner_radius=20, width=200, )
-        self.menu_navigation.grid_configure(padx=5, pady=5)
+        self.menu_navigation.grid_columnconfigure((0), weight=1)
+        self.menu_navigation.grid_rowconfigure((0), weight=1)
+        self.menu_navigation.grid_configure(rowspan=1, padx=5, pady=5)
 
-        self.exercise_options.grid(row=0, column=1, padx=(10,10), pady=10, sticky="nsew")
 
-
-        self.back_bt = ctk.CTkButton(self.menu_navigation, text="", width=1, image=back_icon, fg_color="transparent", hover_color="#95A2FC", corner_radius=10)
+        self.title("Escolha o exercicio")
+        
+        self.back_bt = ctk.CTkButton(self.menu_navigation, text="", width=1, image=back_icon, fg_color="transparent", hover_color="#95A2FC", corner_radius=10, command=lambda: self.toggle_view(True))
         self.back_bt.grid(column=0, row=0, pady=(10,0))
 
         self.word_img = ctk.CTkLabel(self.menu_navigation, text="", image=world1_icon, fg_color="transparent")
         self.word_img.grid(column=0, row=1, sticky="nsew")
 
-        self.total_text = ctk.CTkLabel(self.menu_navigation,font=self.font_title, text="TOTAL\n30", fg_color="transparent", text_color="black")
-        self.total_text.grid(column=0, row=2, sticky="s", pady=(0,50))
+        self.exercise_count_label = ctk.CTkLabel(self.menu_navigation,font=self.font_title, text=f"TOTAL\n{len(self.current_world)}", fg_color="transparent", text_color="black")
+        self.exercise_count_label.grid(column=0, row=2, sticky="s", pady=(0,50))
 
 
-        for i in range(0,30):
+        self.questions_options = CTkXYFrame(self, width=100, fg_color="#FFF6E9", corner_radius=20)
+        self.questions_options.grid(row=0, column=1, padx=(10,10), pady=10, sticky="nsew")
 
+
+        for i, question in enumerate(world):
+            
             row = i // 4
             column = i % 4
     
-            button = ctk.CTkButton(self.exercise_options, width=210, height=50,font=self.font_subtitle, corner_radius=5, text=f"EXERCÍCIO {i+1}", 
-                                   hover_color="#FAB52F", fg_color="#D78A1E", text_color="BLACK", command=self.exercise_solution)
+            button = ctk.CTkButton(self.questions_options, width=210, height=50,font=self.font_subtitle, corner_radius=5, text=f"EXERCÍCIO {i+1}", 
+                                   hover_color="#FAB52F", fg_color="#D78A1E", text_color="BLACK",command=lambda idx=i, q=question: self.questions_solution(idx+1, q))
             button.grid(row=row, column=column, padx=5, pady=10)
     
-    def exercise_solution(self):
-        self.title("Responda o exercicio")
+    def questions_solution(self, index, question):
 
-        self.grid_columnconfigure(1, weight=1)  # Coluna 1 vai expandir
+        self.exercise_count_label.grid_remove()
+        self.questions_options.grid_remove()
+
+
         self.grid_rowconfigure((0,1), weight=1)
 
+        self.menu_navigation.grid_rowconfigure(4, weight=1)
         self.menu_navigation.grid_configure(rowspan=2)
-
-        self.total_text.grid_remove()
-        self.exercise_options.grid_remove()
-        self.word_frame.grid_remove()
+        self.back_bt.configure(command=lambda: self.toggle_view(False))
 
 
-        self.exercise_name = ctk.CTkLabel(self.menu_navigation, text="Exercicio 01", font=self.font_subtitle, width=180, height=50,  fg_color="#D78A1E", text_color="black", corner_radius=5)
-        self.exercise_name.grid(column=0, row=2, pady=(5,5))
+        self.title("Responda o exercicio")
+
+        self.questions_name = ctk.CTkLabel(self.menu_navigation, text=f"Exercicio {index}", font=self.font_subtitle, width=180, height=50,  fg_color="#D78A1E", text_color="black", corner_radius=5)
+        self.questions_name.grid(column=0, row=2, pady=(5,5))
 
 
-        self.show_solution_bt = ctk.CTkButton(self.menu_navigation, text="VER RESPOSTA", width=180,  height=50,font=self.font_body, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5)
-        self.show_solution_bt.grid(column=0, row=3, pady=(20,20))
-
-        self.analyze_response  = ctk.CTkButton(self.menu_navigation, text="ANALISAR SUA\nRESPOSTA", width=180,  height=50, font=self.font_body, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5)
-        self.analyze_response.grid(column=0, row=4, pady=(5,10))
-
-       
-
-        texto = """crie um script python que leia o nome de uma pessoa e mostra uma mensagem de boas-vindas de acordo com o valor digitado"""
-        self.exercise_label.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-        self.exercise_label.configure(text=texto, corner_radius=20, font=self.font_subtitle, justify="left", wraplength=800)
-
-        self.copy_code = ctk.CTkButton(self.solution_textbox, image=copy_icon, text="", width=0,  height=50, fg_color="transparent", hover_color="#95A2FC", corner_radius=5)
-        self.copy_code.grid(row=0, column=0,  pady=(5,0), sticky="ne")
 
 
+        self.analyze_response  = ctk.CTkButton(self.menu_navigation, text="ENVIAR SUA\nRESPOSTA", width=180,  height=50, font=self.font_body, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.send_response)
+        self.analyze_response.grid(column=0, row=3, pady=(5,10))
+
+
+        self.show_solution_bt = ctk.CTkButton(self.menu_navigation, text="VER RESPOSTA", width=180,  height=50,font=self.font_body, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.see_solution)
+        self.show_solution_bt.grid(column=0, row=4, pady=(5), sticky="S")
+
+
+        self.questions_label = ctk.CTkLabel(self, fg_color="#171D23", text_color="#4C76D9", text=question, corner_radius=20, font=self.font_subtitle, justify="left", wraplength=800)
+        self.questions_label.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+
+        self.copy_question = ctk.CTkButton(self.questions_label, image=copy_icon, text="", width=0,  height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.copy_question)
+        self.copy_question.grid(row=0, column=0, padx=(0,30), pady=(8,0), sticky="ne")
+
+
+        self.solution_textbox = ctk.CTkTextbox(self, width=100, fg_color="#23272D", font=self.font_code, corner_radius=20, text_color="white")
         self.solution_textbox.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
-
         self.solution_textbox.insert("0.0", "Digite aqui o seu codigo:")
+        self.solution_textbox.bind("<FocusIn>", self.remove_placeholder)
+
+        self.clear_textbox = ctk.CTkButton(self.solution_textbox, image=delete_icon, text="", width=0,  height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.clear_textbox)
+        self.clear_textbox.grid(row=0, column=0, padx=(0), pady=(8,0), sticky="ne")
 
 
+ 
+    def toggle_view(self, show_menu=True):
+        # Limpa completamente a interface
+        self.utils.restart_interface(self)
 
+        if show_menu:
+            self.menu_view()  # Exibe a visualização do menu
+        else:
+            self.show_questions(self.current_world)
 
+    def remove_placeholder(self, event):
+        """Remove o texto de placeholder quando a caixa de texto ganha foco."""
+        if self.solution_textbox.get("1.0", "end-1c") == "Digite aqui o seu codigo:":
+            self.solution_textbox.delete("1.0", "end")
 
+    def send_response(self):
+        # Get the content of the user's response textbox
+        response_user = self.solution_textbox.get("1.0", "end-1c")
+        message =  self.analysis_instruction_gpt + "\nQuestao: " + self.questions_label._text + "\nE a resposta do usuario foi:" + f'\n{response_user}'
+        print(message)
 
+        # Inicia uma nova thread para chamar a função send_message
+        threading.Thread(target=self.send_message, args=(message,)).start()
+
+        self.solution_textbox.insert("end", "\n\nSua resposta foi enviada para análise\naguarde um momento...")
+
+    def see_solution(self):
+
+        self.solution_textbox.insert("end", "\n\nCarregando a resposta, aguarde um momento...")
+
+        message = self.questions_label._text + self.response_instruction 
+
+        # Inicia uma nova thread para chamar a função send_message
+        threading.Thread(target=self.send_message, args=(message,)).start()
+
+    def send_message(self, message):
+        self.list_message.append({"role": "user", "content": message})
+
+        # Chama a API OpenAI para análise da mensagem
+        resposta = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=self.list_message,
+        )
+
+        # Atualiza o textbox com a resposta na thread principal
+        self.after(0, self.update_textbox, resposta["choices"][0]["message"]["content"])
+
+    def update_textbox(self, content):
+        self.solution_textbox.insert("end", f"\n\n{content}")
+        
+    def clear_textbox(self):
+        self.solution_textbox.delete("1.0", "end")
+
+    def copy_question(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.questions_label._text)
+        self.utils.msgbox("Copiar", "Texto copiado para sua area de transferencia com sucesso", 0)
         

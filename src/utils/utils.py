@@ -34,6 +34,6 @@ class Utilities:
     def restart_interface(frame):
         # Destruir todos os widgets existentes
         for widget in frame.winfo_children():
-            widget.destroy()
+            widget.grid_remove()
 
 

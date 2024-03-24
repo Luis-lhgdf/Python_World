@@ -1,5 +1,4 @@
 
-
 from src.views.main_view import MainView
 
 

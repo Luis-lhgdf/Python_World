@@ -6,9 +6,8 @@ import os
 image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "icon")
 
 
-
-illustration_image = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "illustration.png")),
-                          dark_image=Image.open(os.path.join(image_path, "illustration.png")), size=(400, 400))
+cursoemvideo_image = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "cursoemvideo.png")),
+                          dark_image=Image.open(os.path.join(image_path, "cursoemvideo.png")), size=(400, 400))
 
 linkedin_icon = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "linkedin.png")),
                           dark_image=Image.open(os.path.join(image_path, "linkedin.png")), size=(60, 60))
@@ -36,4 +35,8 @@ back_icon = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "back_b
 
 
 copy_icon = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "copy.png")),
-                          dark_image=Image.open(os.path.join(image_path, "copy.png")), size=(50, 50))
+                          dark_image=Image.open(os.path.join(image_path, "copy.png")), size=(40, 40))
+
+
+delete_icon = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "delete.png")),
+                          dark_image=Image.open(os.path.join(image_path, "delete.png")), size=(40, 40))
