@@ -33,10 +33,19 @@ Responsável pela interface gráfica principal e interação com o usuário.
 - `show_questions`: Exibe os exercícios correspondentes ao mundo escolhido.
 - `questions_solution`: Exibe um exercício específico para que o usuário responda.
 - `toggle_view`: Alterna entre a visualização do menu e dos exercícios.
+- `remove_placeholder`:Remove o placehold do textbox
+
+### Classe Controller
+
+Responsável pela lógica de controle e comunicação entre a interface e a API da OpenAI.
+
+#### Métodos
+
+- `__init__`: Inicializa o controlador com referências para a visualização e utilitários.
 - `send_response`: Envia a resposta do usuário para correção automática.
 - `see_solution`: Permite ao usuário ver a solução do exercício.
 - `send_message`: Envia a mensagem para a API da OpenAI para correção automática.
-- `update_textbox`: Atualiza a caixa de texto com a resposta ou solução recebida.
+- `update_textbox`: Atualiza a caixa de texto com o conteúdo recebido.
 - `clear_textbox`: Limpa o conteúdo da caixa de texto.
 - `copy_question`: Copia o enunciado do exercício para a área de transferência.
 
