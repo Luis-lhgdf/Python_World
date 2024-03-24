@@ -70,7 +70,7 @@ class MainView(ctk.CTk):
         self.word_frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         # Label do título do menu
-        self.title_label = ctk.CTkLabel(self.menu_navigation, font=self.FONT_TITLE, text="PYTHON WORD", text_color="white")
+        self.title_label = ctk.CTkLabel(self.menu_navigation, font=self.FONT_TITLE, text="PYTHON WORLD", text_color="white")
         self.title_label.grid(column=0, row=0, padx=(80), pady=(15, 30), sticky="nsew", columnspan=3)
 
         # Botões de redes sociais e sites
