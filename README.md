@@ -5,9 +5,16 @@ Este projeto foi desenvolvido com o intuito acadêmico e nostálgico de relembra
 ## Funcionalidades
 
 - Escolha do Mundo: Os usuários podem selecionar entre os "Mundos" 1, 2 e 3 do curso.
+  <img src="example_image/menu_view.png"/>
+
 - Visualização dos Exercícios: Os exercícios correspondentes ao mundo escolhido são exibidos na interface.
+  <img src="example_image/show_questions.png"/>
+
 - Resposta e Correção Automática: Os usuários podem responder aos exercícios através da interface, recebendo correções automáticas.
+  <img src="example_image/questions_solution.png"/>
+
 - Visualização da Solução: Além das correções automáticas, os usuários podem visualizar as soluções dos exercícios.
+  <img src="example_image/response.png"/>
 
 ## Como Usar
 

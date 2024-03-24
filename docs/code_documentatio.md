@@ -8,29 +8,46 @@ Este código Python faz parte de um projeto com propósito acadêmico e nostálg
 
 O código oferece as seguintes funcionalidades:
 
-1. **Escolha do Mundo**: Os usuários podem escolher entre os "Mundos" 1, 2 e 3 do curso, clicando nos respectivos botões na interface gráfica.
-2. **Visualização dos Exercícios**: Após escolher um mundo, os exercícios correspondentes a esse mundo são exibidos na interface.
-3. **Resposta e Correção Automática**: Os usuários podem responder aos exercícios através de uma caixa de texto na interface. As respostas são então enviadas para a API da OpenAI para correção automática.
-4. **Visualização da Solução**: Além da correção automática, os usuários podem visualizar a solução dos exercícios.
+- **Escolha do Mundo:** Os usuários podem escolher entre os "Mundos" 1, 2 e 3 do curso, clicando nos respectivos botões na interface gráfica.
+- **Visualização dos Exercícios:** Após escolher um mundo, os exercícios correspondentes a esse mundo são exibidos na interface.
+- **Resposta e Correção Automática:** Os usuários podem responder aos exercícios através de uma caixa de texto na interface. As respostas são então enviadas para a API da OpenAI para correção automática.
 
 ## Dependências Externas
 
 - `customtkinter`: Uma biblioteca personalizada de Tkinter com recursos adicionais.
 - `openai`: Uma biblioteca para interagir com a API da OpenAI.
-- `dotenv`: Para carregar variáveis de ambiente a partir de um arquivo `.env`.
+- `dotenv`: Para carregar variáveis de ambiente a partir de um arquivo .env.
 
 ## Estrutura do Código
 
 O código está estruturado da seguinte forma:
 
-- **Classe `MainView`**: Responsável pela interface gráfica principal e interação com o usuário.
+### Classe MainView
 
-  - **Métodos**:
-    - ... (listar os principais métodos e suas funcionalidades)
+Responsável pela interface gráfica principal e interação com o usuário.
 
-- **Outras Classes e Funções Auxiliares**:
-  - `Utilities`: Contém funções utilitárias para interações diversas, como abrir URLs.
-  - `CTkXYFrame`: Uma classe personalizada para criar frames com layouts específicos.
+#### Métodos
+
+- `__init__`: Inicializa a interface e configurações iniciais.
+- `menu_view`: Exibe o menu inicial com opções de escolha de mundo.
+- `show_questions`: Exibe os exercícios correspondentes ao mundo escolhido.
+- `questions_solution`: Exibe um exercício específico para que o usuário responda.
+- `toggle_view`: Alterna entre a visualização do menu e dos exercícios.
+- `send_response`: Envia a resposta do usuário para correção automática.
+- `see_solution`: Permite ao usuário ver a solução do exercício.
+- `send_message`: Envia a mensagem para a API da OpenAI para correção automática.
+- `update_textbox`: Atualiza a caixa de texto com a resposta ou solução recebida.
+- `clear_textbox`: Limpa o conteúdo da caixa de texto.
+- `copy_question`: Copia o enunciado do exercício para a área de transferência.
+
+### Outras Classes e Funções Auxiliares
+
+- `Utilities`: Contém funções utilitárias para interações diversas, como abrir URLs.
+- `CTkXYFrame`: Uma classe personalizada para criar frames com layouts específicos. (clone do github, link: https://github.com/Akascape/CTkXYFrame)
+
+## Variáveis de Ambiente
+
+O código faz uso da biblioteca dotenv para carregar variáveis de ambiente a partir de um arquivo .env, especialmente a chave da API da OpenAI.
 
 ## Uso
 
