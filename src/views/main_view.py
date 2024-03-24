@@ -261,7 +261,6 @@ A questão que o usuário deve responder é a seguinte:..."""
             if resposta and 'choices' in resposta and resposta['choices']:
                 content = resposta['choices'][0]['message'].get('content')
                 if content:
-                    print(content)
                     # Atualiza o textbox com a resposta na thread principal
                     self.after(0, self.update_textbox, content)
                 else:
