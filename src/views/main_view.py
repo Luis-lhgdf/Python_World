@@ -40,6 +40,9 @@ class MainView(ctk.CTk):
         self.geometry("1200x650")
         self.configure(fg_color="#558FAD")
 
+        # Configurando função de fechamento do sistema
+        self.protocol("WM_DELETE_WINDOW", self.exit)
+
         # Chama o método para criar a visualização do menu principal da aplicação
         self.menu_view()
 
@@ -214,4 +217,8 @@ class MainView(ctk.CTk):
             # Verifica se o texto na caixa de texto é o placeholder e remove-o se for
             self.solution_textbox.delete("1.0", "end")
 
+    def exit(self):
+        resp = self.utils.msgbox("SAIR", "Deseja realmente encerrar o sistema?", 4)
+        if resp == 6:
+            self.destroy()
 
