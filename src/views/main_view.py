@@ -1,22 +1,17 @@
-import os
-import openai
-import threading
 from CTkXYFrame import *
 import customtkinter as ctk
-from dotenv import load_dotenv
 from src.views.icones import *
 from src.utils.utils import Utilities
+from src.controllers import main_controller
 from src.utils.questions import WORLD_ONE, WORLD_TWO, WORLD_THREE
-from src.utils.instruction import ANALYSIS_INSTRUCTION_GPT, RESPONSE_INSTRUCTION
+
+
 
 
 class MainView(ctk.CTk):
     def __init__(self):
         # Chama o método de inicialização da classe pai para configurar a janela principal da aplicação
         super().__init__()
-
-        # Define a chave da API da OpenAI usando a variável de ambiente "KEY_API"
-        openai.api_key = os.environ["KEY_API"]
 
         # Define diferentes fontes para uso na interface
         self.FONT_TITLE = ("Fixedsys", 50, "bold")
@@ -30,22 +25,20 @@ class MainView(ctk.CTk):
         self.SITE_URL = "https://luis-lhgdf.github.io/portfolio/"
         self.CURSOEMVIDEO_URL = "https://www.cursoemvideo.com/curso/python-3-mundo-1/"
 
-        # Inicializa uma variável para a thread de resposta da análise da OpenAI
-        self.response_thread = None
+
 
         # Inicializa listas para armazenar o mundo atual e mensagens da interface
         self.current_world = []
-        self.list_message = []
+        
 
         # Cria uma instância da classe Utilities para usar em toda a aplicação
         self.utils = Utilities()
+        self.controller = main_controller.Controller(self, self.utils)
+
 
         # Configura a geometria e as cores padrão da interface
         self.geometry("1200x650")
         self.configure(fg_color="#558FAD")
-
-        # Carrega variáveis de ambiente a partir de um arquivo .env
-        load_dotenv()
 
         # Chama o método para criar a visualização do menu principal da aplicação
         self.menu_view()
@@ -178,10 +171,10 @@ class MainView(ctk.CTk):
         self.questions_name.grid(column=0, row=2, pady=(5, 5))
 
         # Cria botões para enviar a resposta e visualizar a solução
-        self.analyze_response = ctk.CTkButton(self.menu_navigation, text="ENVIAR SUA\nRESPOSTA", width=180, height=50, font=self.FONT_BODY, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.send_response)
+        self.analyze_response = ctk.CTkButton(self.menu_navigation, text="ENVIAR SUA\nRESPOSTA", width=180, height=50, font=self.FONT_BODY, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.controller.send_response)
         self.analyze_response.grid(column=0, row=3, pady=(5, 10))
 
-        self.show_solution_bt = ctk.CTkButton(self.menu_navigation, text="VER RESPOSTA", width=180, height=50, font=self.FONT_BODY, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.see_solution)
+        self.show_solution_bt = ctk.CTkButton(self.menu_navigation, text="VER RESPOSTA", width=180, height=50, font=self.FONT_BODY, fg_color="#171D23", hover_color="#95A2FC", corner_radius=5, command=self.controller.see_solution)
         self.show_solution_bt.grid(column=0, row=4, pady=(5), sticky="S")
 
         # Exibe o enunciado do exercício
@@ -189,7 +182,7 @@ class MainView(ctk.CTk):
         self.questions_label.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         # Cria um botão para copiar o enunciado do exercício
-        self.copy_question_bt = ctk.CTkButton(self.questions_label, image=copy_icon, text="", width=0, height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.copy_question)
+        self.copy_question_bt = ctk.CTkButton(self.questions_label, image=copy_icon, text="", width=0, height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.controller.copy_question)
         self.copy_question_bt.grid(row=0, column=0, padx=(0, 30), pady=(8, 0), sticky="ne")
 
         # Cria uma caixa de texto para a resposta do usuário
@@ -199,7 +192,7 @@ class MainView(ctk.CTk):
         self.solution_textbox.bind("<FocusIn>", self.remove_placeholder)
 
         # Cria um botão para limpar a caixa de texto
-        self.clear_textbox_bt = ctk.CTkButton(self.solution_textbox, image=delete_icon, text="", width=0, height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.clear_textbox)
+        self.clear_textbox_bt = ctk.CTkButton(self.solution_textbox, image=delete_icon, text="", width=0, height=50, fg_color="transparent", hover=False, corner_radius=10, command=self.controller.clear_textbox)
         self.clear_textbox_bt.grid(row=0, column=0, padx=(0), pady=(8, 0), sticky="ne")
         
     def toggle_view(self, show_menu=True):
@@ -221,82 +214,4 @@ class MainView(ctk.CTk):
             # Verifica se o texto na caixa de texto é o placeholder e remove-o se for
             self.solution_textbox.delete("1.0", "end")
 
-    def send_response(self):
-        # Verifica se há uma thread de resposta em andamento e aguarda sua conclusão antes de iniciar uma nova
-        if self.response_thread and self.response_thread.is_alive():
-            # Exibe uma mensagem de aviso se a análise anterior ainda estiver em andamento
-            self.utils.msgbox("Aviso", "A análise anterior ainda está em andamento. Por favor, aguarde a conclusão.", 0)
-            return
 
-        # Obtém o conteúdo da caixa de texto de resposta do usuário
-        response_user = self.solution_textbox.get("1.0", "end-1c")
-        message = ANALYSIS_INSTRUCTION_GPT + "\nQuestão: " + self.questions_label._text + "\nE a resposta do usuário foi:" + f'\n{response_user}'
-
-        # Inicia uma nova thread para chamar a função send_message
-        self.response_thread = threading.Thread(target=self.send_message, args=(message,))
-        self.response_thread.start()
-
-        # Insere uma mensagem indicando que a resposta foi enviada para análise
-        self.solution_textbox.insert("end", "\n\nSua resposta foi enviada para análise\naguarde um momento...")
-
-
-    def see_solution(self):
-        # Verifica se há uma thread de resposta em andamento e aguarde sua conclusão antes de iniciar uma nova
-        if self.response_thread and self.response_thread.is_alive():
-            self.utils.msgbox("Aviso", "A análise anterior ainda está em andamento. Por favor, aguarde a conclusão.", 0)
-            return
-
-        self.solution_textbox.insert("end", "\n\nCarregando a resposta, aguarde um momento...")
-
-        message = self.questions_label._text + RESPONSE_INSTRUCTION
-
-        # Inicie uma nova thread para chamar a função send_message
-        self.response_thread = threading.Thread(target=self.send_message, args=(message,))
-        self.response_thread.start()
-
-    def send_message(self, message):
-        try:
-            self.list_message.append({"role": "user", "content": message})
-
-            # Chama a API OpenAI para análise da mensagem
-            resposta = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=self.list_message,
-            )
-
-            # Verifica se a resposta foi recebida corretamente
-            if resposta and 'choices' in resposta and resposta['choices']:
-                content = resposta['choices'][0]['message'].get('content')
-                if content:
-                    # Atualiza o textbox com a resposta na thread principal
-                    self.after(0, self.update_textbox, content)
-                else:
-                    # A resposta está vazia ou em um formato inesperado
-                    self.utils.msgbox("Erro", "Não foi possível obter uma resposta válida do modelo.", 0)
-            else:
-                # Não foi possível obter uma resposta do modelo
-                self.utils.msgbox("Erro", "Não foi possível obter uma resposta do modelo.", 0)
-        except Exception as e:
-            # Trata qualquer exceção que possa ocorrer durante o processo
-            print("Erro ao enviar mensagem:", e)
-            self.utils.msgbox("Erro", "Ocorreu um erro ao enviar a mensagem.", 0)
-        finally:
-            # Libera recursos e finaliza a thread
-            self.response_thread = None
-            
-    def update_textbox(self, content):
-        # Atualiza a caixa de texto com o conteúdo fornecido
-        self.solution_textbox.insert("end", f"\n\n{content}")
-        
-    def clear_textbox(self):
-        # Limpa o conteúdo da caixa de texto
-        self.solution_textbox.delete("1.0", "end")
-
-    def copy_question(self):
-        # Copia o texto da questão para a área de transferência
-        self.clipboard_clear()
-        self.clipboard_append(self.questions_label._text)
-        # Exibe uma mensagem informando que o texto foi copiado com sucesso
-        self.utils.msgbox("Copiar", "Texto copiado para sua área de transferência com sucesso", 0)
-
-        
